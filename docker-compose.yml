@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mysql:
+    build: .
+    container_name: mysql_8.4
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # 설정 파일 마운트
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+      # 초기화 스크립트 마운트
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mysql_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  mysql_network:
+    driver: bridge
